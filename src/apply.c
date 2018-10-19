@@ -580,7 +580,7 @@ static int git_apply__to_workdir(
     git_diff *diff,
     git_index *preimage,
     git_index *postimage,
-	git_apply_location_t location,
+    git_apply_location_t location,
     git_apply_options *opts)
 {
 	git_vector paths = GIT_VECTOR_INIT;
