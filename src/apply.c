@@ -629,11 +629,11 @@ done:
 }
 
 static int git_apply__to_index(
-    git_repository *repo,
-    git_diff *diff,
-    git_index *preimage,
-    git_index *postimage,
-    git_apply_options *opts)
+	git_repository *repo,
+	git_diff *diff,
+	git_index *preimage,
+	git_index *postimage,
+	git_apply_options *opts)
 {
 	git_index *index = NULL;
 	const git_diff_delta *delta;
