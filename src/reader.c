@@ -33,10 +33,8 @@ static int tree_reader_read(
 	git_blob *blob = NULL;
 	int error;
 
-	if ((error = git_tree_entry_bypath(&tree_entry,
-	    reader->tree, filename)) < 0 ||
-	    (error = git_blob_lookup(&blob,
-	    git_tree_owner(reader->tree), git_tree_entry_id(tree_entry))) < 0)
+	if ((error = git_tree_entry_bypath(&tree_entry, reader->tree, filename)) < 0 ||
+	    (error = git_blob_lookup(&blob, git_tree_owner(reader->tree), git_tree_entry_id(tree_entry))) < 0)
 		goto done;
 
 	git_buf_set(out, git_blob_rawcontent(blob), git_blob_rawsize(blob));
