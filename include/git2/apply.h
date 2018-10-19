@@ -53,6 +53,14 @@ typedef int (*git_apply_hunk_cb)(
 	const git_diff_hunk *hunk,
 	void *payload);
 
+/**
+ * Apply options structure
+ *
+ * Initialize with `GIT_APPLY_OPTIONS_INIT`. Alternatively, you can
+ * use `git_apply_init_options`.
+ *
+ * @see git_apply_tree, git_apply
+ */
 typedef struct {
 	unsigned int version;
 
