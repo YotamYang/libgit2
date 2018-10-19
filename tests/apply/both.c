@@ -179,7 +179,7 @@ void test_apply_both__index_must_match_workdir(void)
 	const char *diff_file = DIFF_MODIFY_TWO_FILES;
 
 	/*
-	 * Append a line to the end of the file in each the index and the
+	 * Append a line to the end of the file in both the index and the
 	 * working directory.  Although the appended line would allow for
 	 * patch application in each, the line appended is different in
 	 * each, so the application should not be allowed.
