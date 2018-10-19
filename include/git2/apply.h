@@ -21,7 +21,7 @@
  */
 GIT_BEGIN_DECL
 
-/*
+/**
  * When applying a patch, callback that will be made per delta (file).
  *
  * When the callback:
