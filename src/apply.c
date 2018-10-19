@@ -576,12 +576,12 @@ done:
 }
 
 static int git_apply__to_workdir(
-    git_repository *repo,
-    git_diff *diff,
-    git_index *preimage,
-    git_index *postimage,
-    git_apply_location_t location,
-    git_apply_options *opts)
+	git_repository *repo,
+	git_diff *diff,
+	git_index *preimage,
+	git_index *postimage,
+	git_apply_location_t location,
+	git_apply_options *opts)
 {
 	git_vector paths = GIT_VECTOR_INIT;
 	git_checkout_options checkout_opts = GIT_CHECKOUT_OPTIONS_INIT;
