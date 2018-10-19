@@ -37,7 +37,7 @@ typedef int (*git_apply_delta_cb)(
 	const git_diff_delta *delta,
 	void *payload);
 
-/*
+/**
  * When applying a patch, callback that will be made per hunk.
  *
  * When the callback:
