@@ -718,7 +718,7 @@ int git_apply(
 		error = git_reader_for_workdir(&pre_reader, repo, true);
 		break;
 	case GIT_APPLY_LOCATION_INDEX:
-		error = git_reader_for_index(&pre_reader, repo, NULL);
+		error = git_reader_for_index(&pre_reader, repo);
 		break;
 	case GIT_APPLY_LOCATION_WORKDIR:
 		error = git_reader_for_workdir(&pre_reader, repo, false);

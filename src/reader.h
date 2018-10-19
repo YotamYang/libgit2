@@ -50,13 +50,11 @@ extern int git_reader_for_tree(
  *
  * @param out The reader for the given index
  * @param repo The repository containing the index
- * @param index The index to read, or NULL to use the repository's index
  * @return 0 on success, or an error code < 0
  */
 extern int git_reader_for_index(
 	git_reader **out,
-	git_repository *repo,
-	git_index *index);
+	git_repository *repo);
 
 /**
  * Create a `git_reader` that will allow random access to the given

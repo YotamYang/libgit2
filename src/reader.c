@@ -190,26 +190,23 @@ done:
 
 int git_reader_for_index(
 	git_reader **out,
-	git_repository *repo,
-	git_index *index)
+	git_repository *repo)
 {
+	git_index *index;
 	index_reader *reader;
 	int error;
 
 	assert(out && repo);
+
+	if ((error = git_repository_index__weakptr(&index, repo)) < 0)
+		return error;
 
 	reader = git__calloc(1, sizeof(index_reader));
 	GITERR_CHECK_ALLOC(reader);
 
 	reader->reader.read = index_reader_read;
 	reader->repo = repo;
-
-	if (index) {
-		reader->index = index;
-	} else if ((error = git_repository_index__weakptr(&reader->index, repo)) < 0) {
-		git__free(reader);
-		return error;
-	}
+	reader->index = index;
 
 	*out = (git_reader *)reader;
 	return 0;
