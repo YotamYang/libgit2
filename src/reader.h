@@ -18,6 +18,11 @@ typedef struct git_reader git_reader;
  * The `git_reader` structure is a generic interface for reading the
  * contents of a file by its name, and implementations are provided
  * for reading out of a tree, the index, and the working directory.
+ *
+ * Note that the reader implementation is meant to have a short
+ * lifecycle and does not increase the refcount of the object that
+ * it's reading.  Callers should ensure that they do not use a
+ * reader after disposing the underlying object that it reads.
  */
 struct git_reader {
 	int (*read)(git_buf *out, git_oid *out_oid, git_reader *reader, const char *filename);
