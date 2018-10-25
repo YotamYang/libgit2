@@ -569,6 +569,7 @@ cleanup:
 typedef struct {
 	git_stream parent;
 	git_stream *io;
+	int owned;
 	bool connected;
 	char *host;
 	SSL *ssl;
@@ -696,29 +697,27 @@ void openssl_free(git_stream *stream)
 	git__free(st);
 }
 
-int git_openssl_stream_new(git_stream **out, const char *host, const char *port)
+int openssl_stream_wrap(
+	git_stream **out,
+	git_stream *in,
+	const char *host,
+	int owned)
 {
-	int error;
 	openssl_stream *st;
+
+	assert(out && in && host);
 
 	st = git__calloc(1, sizeof(openssl_stream));
 	GITERR_CHECK_ALLOC(st);
 
-	st->io = NULL;
-#ifdef GIT_CURL
-	error = git_curl_stream_new(&st->io, host, port);
-#else
-	error = git_socket_stream_new(&st->io, host, port);
-#endif
-
-	if (error < 0)
-		goto out_err;
+	st->io = in;
+	st->owned = owned;
 
 	st->ssl = SSL_new(git__ssl_ctx);
 	if (st->ssl == NULL) {
 		giterr_set(GITERR_SSL, "failed to create ssl object");
-		error = -1;
-		goto out_err;
+		git__free(st);
+		return -1;
 	}
 
 	st->host = git__strdup(host);
@@ -737,10 +736,33 @@ int git_openssl_stream_new(git_stream **out, const char *host, const char *port)
 
 	*out = (git_stream *) st;
 	return 0;
+}
 
-out_err:
-	git_stream_free(st->io);
-	git__free(st);
+int git_openssl_stream_wrap(git_stream **out, git_stream *in, const char *host)
+{
+	return openssl_stream_wrap(out, in, host, 0);
+}
+
+int git_openssl_stream_new(git_stream **out, const char *host, const char *port)
+{
+	git_stream *stream = NULL;
+	int error;
+
+	assert(out && host);
+
+#ifdef GIT_CURL
+	error = git_curl_stream_new(&stream, host, port);
+#else
+	error = git_socket_stream_new(&stream, host, port);
+#endif
+
+	if (!error)
+		error = openssl_stream_wrap(out, stream, host, 1);
+
+	if (error < 0 && stream) {
+		git_stream_close(stream);
+		git_stream_free(stream);
+	}
 
 	return error;
 }
