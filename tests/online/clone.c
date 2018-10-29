@@ -20,6 +20,7 @@ static git_clone_options g_options;
 static char *_remote_url = NULL;
 static char *_remote_user = NULL;
 static char *_remote_pass = NULL;
+static bool _remote_sslnoverify = false;
 static char *_remote_ssh_pubkey = NULL;
 static char *_remote_ssh_privkey = NULL;
 static char *_remote_ssh_passphrase = NULL;
@@ -34,6 +35,18 @@ static int _orig_proxies_need_reset = 0;
 static char *_orig_http_proxy = NULL;
 static char *_orig_https_proxy = NULL;
 
+static int ssl_cert(git_cert *cert, int valid, const char *host, void *payload)
+{
+	GIT_UNUSED(cert);
+	GIT_UNUSED(host);
+	GIT_UNUSED(payload);
+
+	if (_remote_sslnoverify)
+		valid = 1;
+
+	return valid ? 0 : GIT_ECERTIFICATE;
+}
+
 void test_online_clone__initialize(void)
 {
 	git_checkout_options dummy_opts = GIT_CHECKOUT_OPTIONS_INIT;
@@ -46,10 +59,12 @@ void test_online_clone__initialize(void)
 	g_options.checkout_opts = dummy_opts;
 	g_options.checkout_opts.checkout_strategy = GIT_CHECKOUT_SAFE;
 	g_options.fetch_opts = dummy_fetch;
+	g_options.fetch_opts.callbacks.certificate_check = ssl_cert;
 
 	_remote_url = cl_getenv("GITTEST_REMOTE_URL");
 	_remote_user = cl_getenv("GITTEST_REMOTE_USER");
 	_remote_pass = cl_getenv("GITTEST_REMOTE_PASS");
+	_remote_sslnoverify = cl_getenv("GITTEST_REMOTE_SSL_NOVERIFY") != NULL;
 	_remote_ssh_pubkey = cl_getenv("GITTEST_REMOTE_SSH_PUBKEY");
 	_remote_ssh_privkey = cl_getenv("GITTEST_REMOTE_SSH_KEY");
 	_remote_ssh_passphrase = cl_getenv("GITTEST_REMOTE_SSH_PASSPHRASE");
