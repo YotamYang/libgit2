@@ -40,7 +40,7 @@ Write-Host "####################################################################
 if (-not $Env:SKIP_PROXY_TESTS) {
 	Write-Host ""
 	Write-Host "Starting HTTP proxy..."
-	Invoke-WebRequest -Method GET -Uri https://github.com/ethomson/poxyproxy/releases/download/v0.1.0/poxyproxy-0.1.0.jar -OutFile poxyproxy.jar
+	Invoke-WebRequest -Method GET -Uri https://github.com/ethomson/poxyproxy/releases/download/v0.3.0/poxyproxy-0.3.0.jar -OutFile poxyproxy.jar
 	javaw -jar poxyproxy.jar -d --port 8080 --credentials foo:bar
 }
 
@@ -68,6 +68,16 @@ if (-not $Env:SKIP_PROXY_TESTS) {
 	$Env:GITTEST_REMOTE_PROXY_HOST="localhost:8080"
 	$Env:GITTEST_REMOTE_PROXY_USER="foo"
 	$Env:GITTEST_REMOTE_PROXY_PASS="bar"
+
+	run_test proxy
+
+	Write-Host ""
+	Write-Host "Running proxy (SSL) tests"
+	Write-Host ""
+
+	$Env:GITTEST_REMOTE_PROXY_SCHEME="https"
+	$Env:GITTEST_REMOTE_PROXY_HOST="localhost:8081"
+	$Env:GITTEST_REMOTE_PROXY_SELFSIGNED=1
 
 	run_test proxy
 
